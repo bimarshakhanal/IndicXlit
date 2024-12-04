@@ -322,19 +322,19 @@ class BaseEngineTransformer(ABC):
         src_word = matches[-1]
         
         transliteration_list = self.batch_transliterate_words([src_word], src_lang, tgt_lang, topk=topk)[0]
-        
+        transliteration_text = []
         if tgt_lang != 'en' or tgt_lang != 'sa':
             # If users want to avoid yuktAkshara, this is facilitated by allowing them to type subwords inorder to construct a word
             # For example, "ଜନ୍‍ସନ୍‍ଙ୍କୁ" can be written by "ଜନ୍‍" + "ସନ୍‍" + "କୁ"
             # Not enabled for Sanskrit, as sandhi compounds are generally written word-by-word
             for i in range(len(transliteration_list)):
-                transliteration_list[i] = hardfix_wordfinal_virama(transliteration_list[i])
+                transliteration_text.append([hardfix_wordfinal_virama(transliteration_list[i][0]),transliteration_list[i][1]] )
     
         if src_word == text:
             return transliteration_list
 
         return [
-            rreplace(text, src_word, tgt_word)
+            [rreplace(text, src_word, tgt_word[0]), tgt_word[1]]
             for tgt_word in transliteration_list
         ]
     
