@@ -1,6 +1,7 @@
 import os
 import re
 import tqdm
+import math
 import ujson
 from pydload import dload
 import zipfile
@@ -286,12 +287,12 @@ class BaseEngineTransformer(ABC):
             for i in res_dict.keys():
                 # transliterated_word_list.append( res_dict[i]['S'] + '  :  '  + res_dict[i]['H'][0][0] )
                 for j in range(len(res_dict[i]['H'])):
-                    transliterated_word_list.append( res_dict[i]['H'][j][0] )
+                    transliterated_word_list.append((res_dict[i]['H'][j][0], res_dict[i]['H'][j][1]))
 
         # remove extra spaces
         # transliterated_word_list = [''.join(pair.split(':')[0].split(' ')[1:]) + ' : ' + ''.join(pair.split(':')[1].split(' ')) for pair in transliterated_word_list]
 
-        transliterated_word_list = [''.join(word.split(' ')) for word in transliterated_word_list]
+        transliterated_word_list = [(''.join(res[0].split(' ')), res[1]) for res in transliterated_word_list]
 
         return transliterated_word_list
 
@@ -387,9 +388,12 @@ class BaseEngineTransformer(ABC):
 
         if not matches:
             return text
-
         out_str = text
+        scores = []
         for match in matches:
             result = self.batch_transliterate_words([match], src_lang, tgt_lang)[0][0]
-            out_str = re.sub(match, result, out_str, 1)
-        return out_str
+            scores.append(result[1])
+            out_str = re.sub(match, result[0], out_str, 1)
+        
+        score = math.prod(scores)
+        return out_str, score
