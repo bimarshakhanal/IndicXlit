@@ -50,6 +50,9 @@ class XlitEngineTransformer_Indic2En(BaseEngineTransformer):
             self._all_supported_langs.remove("en")
 
         self._tgt_langs = set(["en"])
+        print("*"*20)
+        print("Model path: ", MODEL_DOWNLOAD_URL, models_path)
+        print("*"*20)
 
         model_file_path = self.download_models(models_path, MODEL_DOWNLOAD_URL)
         if rescore:

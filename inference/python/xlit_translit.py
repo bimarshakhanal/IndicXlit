@@ -24,38 +24,12 @@ class Model:
             target_lang_key : json.load(open(f"word_prob_dicts/{target_lang_key}_word_prob_dict.json", 'r'))
             for target_lang_key in ['bn','gu','hi','kn','ml','mr','pa','ta','te','gom','mai','sa']  
         }
-        # for adding language token
-        # self.target_lang = target_lang
-
-    # def normalize(self, words, target_lang):
-        
-    #     if target_lang not in ['gom','ks','ur','mai']:
-    #         normalizer_factory = IndicNormalizerFactory()
-    #         normalizer = normalizer_factory.get_normalizer(target_lang)
-    #         words = [ normalizer.normalize(word.split('\t')[0]) for word in words ]
-    #         print("Normalized word : ",len(words))
-            
-    #     if target_lang == 'gom':
-    #         normalizer_factory = IndicNormalizerFactory()
-    #         normalizer = normalizer_factory.get_normalizer('kK')
-    #         words = [ normalizer.normalize(word.split('\t')[0]) for word in words ]
-    #         print("Normalized word : ",len(words))
-
-    #     return words
-
-    # def hard_normalizer(self, normalized_words):
-    #     return normalized_words
-    
+ 
+  
     def pre_process(self, words, target_lang):
         
         # small caps 
         words = [word.lower() for word in words]
-
-        # normalize and tokenize the words
-        # normalized_words = self.normalize(words)
-
-        # manully mapping certain characters
-        # normalized_words = self.hard_normalizer(normalized_words)
 
         # convert the word into sentence which contains space separated chars
         words = [' '.join(list(word)) for word in words]
@@ -167,17 +141,10 @@ class Model:
                 if s_id == h_id:
                     res_dict[s_id]['H'].append( ( h.split('\t')[2], pow(2,float(h.split('\t')[1])) ) )
             
-            # for d in list_d:
-            #     d_id = int(d.split('\t')[0].split('-')[1])
-            
-            #     if s_id == d_id:
-            #         res_dict[s_id]['D'].append( ( d.split('\t')[2], pow(2,float(d.split('\t')[1]))  ) )
-
         for r in res_dict.keys():
             res_dict[r]['H'].sort(key = lambda x : float(x[1]) ,reverse =True)
             # res_dict[r]['D'].sort(key = lambda x : float(x[1]) ,reverse =True)
         
-
         # for rescoring 
         result_dict = {}
         for i in res_dict.keys():            
@@ -238,39 +205,3 @@ class Model:
 
         print(transliterated_word_list)
         return transliterated_word_list
-
-    # def batch_translate(self, words, rescore):
-
-    #     assert isinstance(words, list)
-
-    #     # check for blank lines
-    #     words = [word for word in words if word]
-
-    #     # exit if invalid inputs
-    #     if not words:
-    #         print("error : Please insert valid inputs : pass atleast one word")
-    #         sys.exit()
-
-    #     # check if there is non-english characters
-    #     pattern = '[^a-zA-Z]'    
-    #     len_words = len(words)
-    #     words = [ word for word in words if not re.compile(pattern).search(word) ]
-        
-    #     if len(words) < len_words:
-    #         print(" Warning : words will got removed from input list which has non-english characters")
-
-    #     if not words:
-    #         print("error : Please insert valid inputs : only pass english characters ")
-    #         sys.exit()
-
-    #     words = self.pre_process(words)
-
-    #     # Passing the list of words
-    #     translation_str = self.transliterator.translate(words)
-        
-    #     transliterated_word_list = self.post_process(translation_str, rescore)
-    #     print(transliterated_word_list)
-
-    #     return transliterated_word_list
-
- 

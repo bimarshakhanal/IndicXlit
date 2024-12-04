@@ -299,7 +299,7 @@ class BaseEngineTransformer(ABC):
         if not text:
             return text
         text = text.lower().strip()
-
+        print("Word to translate: ", text)
         if src_lang != 'en':
             # Our model does not transliterate native punctuations or numerals
             # So process them first so that they are not considered for transliteration
@@ -315,7 +315,7 @@ class BaseEngineTransformer(ABC):
                 text = text.translate(LATIN_TO_NATIVE_NUMERALS_TRANSLATORS[tgt_lang])
 
         matches = LANG_WORD_REGEXES[src_lang].findall(text)
-
+    
         if not matches:
             return [text]
 
