@@ -156,8 +156,6 @@ class BaseEngineTransformer(ABC):
         return words
 
     def rescore(self, res_dict, result_dict, tgt_lang, alpha ):
-        
-        alpha = alpha
         # word_prob_dict = {}
         word_prob_dict = self.word_prob_dicts[tgt_lang]
 
@@ -168,9 +166,9 @@ class BaseEngineTransformer(ABC):
         for i in res_dict.keys():
             input_data[res_dict[i]['S']] = []
             for j in range(len(res_dict[i]['H'])):
-                input_data[res_dict[i]['S']].append( res_dict[i]['H'][j][0] )
-        
-        for src_word in input_data.keys():
+                input_data[res_dict[i]['S']].append(res_dict[i]['H'][j][0])
+
+        for src_word, _ in input_data.items():
             candidates = input_data[src_word]
 
             candidates = [' '.join(word.split(' ')) for word in candidates]
@@ -218,7 +216,7 @@ class BaseEngineTransformer(ABC):
             
             temp_candidates_list = []
             for cadidate_tuple in temp_candidates_tuple_list: 
-                temp_candidates_list.append(' '.join(list(cadidate_tuple[0])))
+                temp_candidates_list.append([' '.join(list(cadidate_tuple[0])),cadidate_tuple[1]])
 
             output_data[src_word] = temp_candidates_list
 
@@ -263,25 +261,24 @@ class BaseEngineTransformer(ABC):
             #     if s_id == d_id:
             #         res_dict[s_id]['D'].append( ( d.split('\t')[2], pow(2,float(d.split('\t')[1]))  ) )
 
-        for r in res_dict.keys():
-            res_dict[r]['H'].sort(key = lambda x : float(x[1]) ,reverse =True)
+        for r, _ in res_dict.items():
+            res_dict[r]['H'].sort(key=lambda x: float(x[1]), reverse=True)
             # res_dict[r]['D'].sort(key = lambda x : float(x[1]) ,reverse =True)
         
 
-        # for rescoring 
+        # for rescoring
         result_dict = {}
-        for i in res_dict.keys():            
+        for i, _ in res_dict.items():            
             result_dict[res_dict[i]['S']] = {}
             for j in range(len(res_dict[i]['H'])):
-                 result_dict[res_dict[i]['S']][res_dict[i]['H'][j][0]] = res_dict[i]['H'][j][1]
-        
+                result_dict[res_dict[i]['S']][res_dict[i]['H'][j][0]] = res_dict[i]['H'][j][1]
         
         transliterated_word_list = []
         if self._rescore:
-            output_dir = self.rescore(res_dict, result_dict, tgt_lang, alpha = 0.9)            
-            for src_word in output_dir.keys():
+            output_dir = self.rescore(res_dict, result_dict, tgt_lang, alpha = 0.9)   
+            for src_word, _ in output_dir.items():
                 for j in range(len(output_dir[src_word])):
-                    transliterated_word_list.append( output_dir[src_word][j] )
+                    transliterated_word_list.append(output_dir[src_word][j])
 
         else:
             for i in res_dict.keys():
@@ -290,10 +287,7 @@ class BaseEngineTransformer(ABC):
                     transliterated_word_list.append((res_dict[i]['H'][j][0], res_dict[i]['H'][j][1]))
 
         # remove extra spaces
-        # transliterated_word_list = [''.join(pair.split(':')[0].split(' ')[1:]) + ' : ' + ''.join(pair.split(':')[1].split(' ')) for pair in transliterated_word_list]
-
         transliterated_word_list = [(''.join(res[0].split(' ')), res[1]) for res in transliterated_word_list]
-
         return transliterated_word_list
 
     def _transliterate_word(self, text, src_lang, tgt_lang, topk=4, nativize_punctuations=True, nativize_numerals=False):
