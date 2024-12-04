@@ -2,7 +2,7 @@ import os
 from collections.abc import Iterable
 
 import logging
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.DEBUG)
 
 from .base_engine import BaseEngineTransformer, LANG_LIST_FILE
 
