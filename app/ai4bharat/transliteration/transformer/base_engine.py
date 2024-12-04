@@ -300,7 +300,6 @@ class BaseEngineTransformer(ABC):
         if not text:
             return text
         text = text.lower().strip()
-        print("Word to translate: ", text)
         if src_lang != 'en':
             # Our model does not transliterate native punctuations or numerals
             # So process them first so that they are not considered for transliteration
