@@ -230,9 +230,9 @@ class BaseEngineTransformer(ABC):
         list_h = [line for line in lines if 'H-' in line]
         # list_d = [line for line in lines if 'D-' in line]
 
-        list_s.sort(key = lambda x: int(x.split('\t')[0].split('-')[1]) )
+        list_s.sort(key=lambda x: int(x.split('\t')[0].split('-')[1]))
         # list_t.sort(key = lambda x: int(x.split('\t')[0].split('-')[1]) )
-        list_h.sort(key = lambda x: int(x.split('\t')[0].split('-')[1]) )
+        list_h.sort(key=lambda x: int(x.split('\t')[0].split('-')[1]))
         # list_d.sort(key = lambda x: int(x.split('\t')[0].split('-')[1]) )
 
         res_dict = {}
@@ -387,6 +387,6 @@ class BaseEngineTransformer(ABC):
             result = self.batch_transliterate_words([match], src_lang, tgt_lang)[0][0]
             scores.append(result[1])
             out_str = re.sub(match, result[0], out_str, 1)
-        
-        score = math.prod(scores)
+
+        score = round(sum(scores)/len(scores), 2)
         return out_str, score
