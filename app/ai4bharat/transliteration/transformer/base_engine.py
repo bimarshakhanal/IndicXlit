@@ -380,7 +380,7 @@ class BaseEngineTransformer(ABC):
         matches = LANG_WORD_REGEXES[src_lang].findall(text)
 
         if not matches:
-            return text
+            return text, 1.0
         out_str = text
         scores = []
         for match in matches:

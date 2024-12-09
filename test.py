@@ -7,3 +7,6 @@ print(out)
 t = "नेपाल पोखरा"
 out = e.translit_sentence(t, lang_code="ne")
 print(out)
+
+out = e.translit_sentence("12244 ae", lang_code="ne")
+print(out)
