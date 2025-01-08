@@ -34,14 +34,16 @@ class XlitEngineTransformer_Indic2En(BaseEngineTransformer):
 
     TODO: Ability to pass `beam_width` dynamically
     """
-    def __init__(self, beam_width=4, rescore=True):
-        if is_directory_writable(F_DIR):
-            models_path = os.path.join(F_DIR, 'models')
-        else:
-            user_home = os.path.expanduser("~")
-            models_path = os.path.join(user_home, '.AI4Bharat_Xlit_Models')
-        models_path = os.path.join(models_path, "indic2en", XLIT_VERSION)
-        os.makedirs(models_path, exist_ok=True)
+    def __init__(self, beam_width=4, rescore=True, models_path=None):
+        print("Model path: ", models_path)
+        if models_path is None:
+            if is_directory_writable(F_DIR):
+                models_path = os.path.join(F_DIR, 'models')
+            else:
+                user_home = os.path.expanduser("~")
+                models_path = os.path.join(user_home, '.AI4Bharat_Xlit_Models')
+            models_path = os.path.join(models_path, "indic2en", XLIT_VERSION)
+            os.makedirs(models_path, exist_ok=True)
 
         lang_list_file = os.path.join(models_path, LANG_LIST_FILE)
         _all_supported_langs = open(lang_list_file).read().strip().split('\n')
